@@ -34,4 +34,11 @@ class ApiController {
 			return apiService.fibonacci(it)
 		}] as JSON)
 	}
+
+	def fizzBuzz() {
+		Collection input = JSON.parse(request.reader.text)
+		render([data: input.collect {
+			return apiService.fizzBuzz(it)
+		}] as JSON)
+	}
 }

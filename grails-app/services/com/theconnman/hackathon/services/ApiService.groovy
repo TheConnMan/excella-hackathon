@@ -23,4 +23,17 @@ class ApiService {
 		fibonacciCache[index] = value
 		return value
 	}
+
+	def fizzBuzz(int number) {
+		if (number % 6 == 0) {
+			return 'FizzBuzz'
+		}
+		if (number % 2 == 0) {
+			return 'Fizz'
+		}
+		if (number % 3 == 0) {
+			return 'Buzz'
+		}
+		return number
+	}
 }
