@@ -86,6 +86,23 @@ class ApiService {
 		return true
 	}
 
+	Collection sexyPrimes(int number) {
+		Collection primes = getPrimes(number)
+		Collection sexyPrimes = []
+		primes.each {
+			if ((it + 6) in primes) {
+				sexyPrimes.push([it, it + 6])
+			}
+		}
+		return sexyPrimes
+	}
+
+	Collection getPrimes(int number) {
+		return (2..number).grep {
+			return isPrime(it)
+		}
+	}
+
 	Collection primeFactors(double number) {
 		if (number == 0 || number > 1000000000) {
 			return []
