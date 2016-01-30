@@ -51,9 +51,7 @@ class ApiController {
 
 	def sexyPrimes() {
 		Collection input = JSON.parse(request.reader.text)
-		render([data: input.collect {
-			return apiService.sexyPrimes(it)
-		}] as JSON)
+		render([data: apiService.sexyPrimes(input.first())] as JSON)
 	}
 
 	def primeFactors() {
