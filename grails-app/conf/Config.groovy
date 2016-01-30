@@ -1,3 +1,6 @@
+def loc = ['../UserConfig.groovy', '/usr/share/tomcat8/webapps/ROOT/Jenkins.groovy'].grep { new File(it).exists() }.first();
+def localConfig = new ConfigSlurper(grailsSettings.grailsEnv).parse(new File(loc).toURI().toURL())
+
 grails.project.groupId = appName
 grails.mime.file.extensions = true
 grails.mime.use.accept.header = false
@@ -36,6 +39,8 @@ grails.web.disable.multipart=false
 grails.exceptionresolver.params.exclude = ['password']
 
 grails.hibernate.cache.queries = false
+
+wmat.api.key = localConfig.wmat.api.key
 
 environments {
 	development {
