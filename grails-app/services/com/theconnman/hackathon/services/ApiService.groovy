@@ -36,4 +36,17 @@ class ApiService {
 		}
 		return number
 	}
+
+	boolean isPrime(int number) {
+		if (number < 4) {
+			return true
+		}
+		int squareRoot = Math.floor(Math.sqrt(number))
+		for (int i = 2; i <= squareRoot; i++) {
+			if (number % i == 0) {
+				return false
+			}
+		}
+		return true
+	}
 }

@@ -41,4 +41,11 @@ class ApiController {
 			return apiService.fizzBuzz(it)
 		}] as JSON)
 	}
+
+	def prime() {
+		Collection input = JSON.parse(request.reader.text)
+		render([data: input.collect {
+			return apiService.isPrime(it)
+		}] as JSON)
+	}
 }
