@@ -15,17 +15,17 @@ class MetroService {
 	static final REAL_TIME_API_ROOT = 'https://excellathon.herokuapp.com/wmata/StationPrediction.svc/json/GetPrediction/'
 
 	Map constructResponse(double lat, double lng, double radius) {
-		Map station = getNearbyStation(lat, lng, radius)
-		Collection nextTrains = getNextTrains([station.Code])
+		Collection<Map> stations = getNearbyStation(lat, lng, radius)
+		Collection nextTrains = getNextTrains(stations*.Code)
 		return [
-			station: station?.Name,
-			stationLat: station?.Lat,
-			stationLong: station?.Lon,
+			station: stations?.first().Name,
+			stationLat: stations?.first().Lat,
+			stationLong: stations?.first().Lon,
 			departures: nextTrains
 		]
 	}
 
-	Map getNearbyStation(double lat, double lng, double radius) {
+	Collection<Map> getNearbyStation(double lat, double lng, double radius) {
 		RestResponse resp = new RestBuilder().get(WMAT_API_ROOT + 'jStationEntrances?Lat=' + lat + '&Lon=' + lng + '&Radius=' + radius) {
 			header 'api_key', grailsApplication.config.wmat.api.key
 		}
@@ -36,12 +36,12 @@ class MetroService {
 		String stationCode = json.Entrances.first().StationCode1
 		Collection stations = getStations()
 		Collection currentStations = stations.grep { Map station ->
-			station.Code == stationCode
+			station.Code == stationCode || station.StationTogether1 == stationCode || station.StationTogether2 == stationCode
 		}
 		if (currentStations.size() == 0) {
 			return [:]
 		}
-		return currentStations.first()
+		return currentStations
 	}
 
 	Collection getNextTrains(Collection<String> stationCodes) {
