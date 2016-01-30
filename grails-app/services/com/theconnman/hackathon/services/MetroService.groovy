@@ -52,7 +52,7 @@ class MetroService {
 		if (json.Entrances && json.Entrances.size() == 0) {
 			return []
 		}
-		String stationCode = json.Entrances.first().StationCode1
+		String stationCode = json.Entrances ? json.Entrances.first().StationCode1 : []
 		Collection stations = getStations()
 		Collection currentStations = stations.grep { Map station ->
 			station.Code == stationCode || station.StationTogether1 == stationCode || station.StationTogether2 == stationCode
