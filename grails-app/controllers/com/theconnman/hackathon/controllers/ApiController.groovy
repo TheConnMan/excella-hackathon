@@ -27,4 +27,11 @@ class ApiController {
 			return apiService.isPalindrome(it)
 		}] as JSON)
 	}
+
+	def fibonacci() {
+		Collection input = JSON.parse(request.reader.text)
+		render([data: input.collect {
+			return apiService.fibonacci(it)
+		}] as JSON)
+	}
 }
