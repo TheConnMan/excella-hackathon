@@ -51,7 +51,7 @@ class ApiService {
 	}
 
 	Collection primeFactors(double number) {
-		if (number == 0) {
+		if (number == 0 || number > 1000000000) {
 			return []
 		}
 		Collection factors = []
