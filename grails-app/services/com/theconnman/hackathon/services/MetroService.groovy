@@ -16,9 +16,9 @@ class MetroService {
 	Map constructResponse(double lat, double lng, double radius) {
 		Map station = getNearbyStation(lat, lng, radius)
 		return [
-			station: station.Name,
-			stationLat: station.Lat,
-			stationLong: station.Lon
+			station: station?.Name,
+			stationLat: station?.Lat,
+			stationLong: station?.Lon
 		]
 	}
 
@@ -27,10 +27,16 @@ class MetroService {
 			header 'api_key', grailsApplication.config.wmat.api.key
 		}
 		Map json = JSON.parse(resp.text)
+		if (json.Entrances.size() == 0) {
+			return [:]
+		}
 		String stationCode = json.Entrances.first().StationCode1
 		Collection stations = getStations()
 		Collection currentStations = stations.grep { Map station ->
 			station.Code == stationCode
+		}
+		if (currentStations.size() == 0) {
+			return [:]
 		}
 		return currentStations.first()
 	}
