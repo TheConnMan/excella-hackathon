@@ -76,4 +76,11 @@ class ApiController {
 			return apiService.toRoman(it)
 		}] as JSON)
 	}
+
+	def bowling() {
+		Collection input = JSON.parse(request.reader.text)
+		render([data: input.collect {
+			return apiService.bowling(it)
+		}] as JSON)
+	}
 }

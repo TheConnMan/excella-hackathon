@@ -172,4 +172,37 @@ class ApiService {
 		}
 		return numeral
 	}
+
+	int bowling(Collection bowls) {
+		int score = 0
+		boolean firstThrow = true
+		String last = ''
+		String lastLast = ''
+		int frame = 1
+		for (int index = 0; index < bowls.size(); index++) {
+			if ((last == 'strike' || last == 'spare') && frame < 12) {
+				score += bowls[index]
+			}
+			if (lastLast == 'strike') {
+				score += bowls[index]
+			}
+			if (frame < 11) {
+				score += bowls[index]
+			}
+			lastLast = last
+			if (firstThrow && bowls[index] == 10) { // Strike
+				last = 'strike'
+				frame++
+			} else if (!firstThrow && bowls[index - 1] + bowls[index] == 10) { // Spare
+				last = 'spare'
+				firstThrow = true
+				frame ++
+			} else { // Other
+				last = ''
+				firstThrow = !firstThrow
+				frame += !firstThrow ? 1 : 0
+			}
+		}
+		return score
+	}
 }
