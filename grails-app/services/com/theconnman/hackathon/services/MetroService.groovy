@@ -14,12 +14,13 @@ class MetroService {
 	static final MAPS_API_ROOT = 'http://maps.googleapis.com/maps/api/geocode/json?address='
 
 	Map constructResponse(double lat, double lng, double radius, String destination) {
+		sleep 400
 		Collection<Map> stations = getNearbyStation(lat, lng, radius)
 		Collection nextTrains = getNextTrains(stations*.Code)
 		Map resp = [
-			station: stations?.first().Name,
-			stationLat: stations?.first().Lat,
-			stationLong: stations?.first().Lon,
+			station: stations.size() != 0 ? stations.first().Name : '',
+			stationLat: stations.size() != 0 ? stations.first().Lat : '',
+			stationLong: stations.size() != 0 ? stations.first().Lon : '',
 			departures: nextTrains
 		]
 		if (destination) {
