@@ -25,6 +25,21 @@ class MetroService {
 		if (destination) {
 			Map location = getLatLng(destination)
 			Collection<Map> destinationStations = getNearbyStation(location.lat, location.lng, 600)
+			Collection commonLines = getCommonLines(stations, destinationStations)
+			Collection endsOnCommonLines = nextTrains.grep {
+				it.line in commonLines
+			}
+			Collection startStationsWithLine = stations.grep { hasLines(it, commonLines) }
+			if (startStationsWithLine.size() == 1) {
+				resp.departures = endsOnCommonLines.grep { Map train ->
+					Collection remainingStops = getRemainingStops(startStationsWithLine.first().Code, train.destinationCode)
+					return destinationStations*.Code.intersect(remainingStops*.StationCode)
+				}
+			}
+		}
+		resp.departures = resp.departures.collect {
+			it.remove('destinationCode')
+			return it
 		}
 		return resp
 	}
@@ -57,7 +72,8 @@ class MetroService {
 			return [
 				destination: train.DestinationName,
 				line: train.Line,
-				minutes: train.Min
+				minutes: train.Min,
+				destinationCode: train.DestinationCode
 			]
 		}
 	}
@@ -70,6 +86,32 @@ class MetroService {
 			return [:]
 		}
 		return results.first().geometry.location
+	}
+
+	Collection getRemainingStops(String startCode, String endCode) {
+		RestResponse resp = new RestBuilder().get(WMAT_API_ROOT + 'jPath?FromStationCode=' + startCode + '&ToStationCode=' + endCode) {
+			header 'api_key', grailsApplication.config.wmat.api.key
+		}
+		println WMAT_API_ROOT + 'jPath?FromStationCode=' + startCode + '&ToStationCode=' + endCode
+		Map json = JSON.parse(resp.text)
+		return json.Path
+	}
+
+	Collection getCommonLines(Collection startStations, Collection endStations) {
+		return startStations.collectMany {
+			return getStationLineCodes(it)
+		}.intersect(endStations.collectMany {
+			return getStationLineCodes(it)
+		}).grep { it }
+	}
+
+	boolean hasLines(Map station, Collection lines) {
+		Collection stationLines = getStationLineCodes(station)
+		return lines.intersect(stationLines).size() != 0
+	}
+
+	Collection getStationLineCodes(Map station) {
+		return [station.LineCode1, station.LineCode2, station.LineCode3, station.LineCode4].grep { it }
 	}
 
 	Collection getStations() {
