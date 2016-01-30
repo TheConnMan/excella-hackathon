@@ -49,7 +49,7 @@ class MetroService {
 			header 'api_key', grailsApplication.config.wmat.api.key
 		}
 		Map json = JSON.parse(resp.text)
-		if (json.Entrances.size() == 0) {
+		if (json.Entrances && json.Entrances.size() == 0) {
 			return []
 		}
 		String stationCode = json.Entrances.first().StationCode1
