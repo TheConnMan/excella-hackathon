@@ -39,6 +39,7 @@ grails.project.dependency.resolution = {
 		build ":tomcat:7.0.55.2"
 		compile ":spring-security-ui:1.0-RC2"
 		compile ":spring-security-core:2.0-RC5"
+		compile "org.grails.plugins:rest-client-builder:2.1.1"
 
 		test ":codenarc:0.22"
 		test ":code-coverage:2.0.3-3"
