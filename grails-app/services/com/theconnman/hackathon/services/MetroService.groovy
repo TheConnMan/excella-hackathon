@@ -50,7 +50,7 @@ class MetroService {
 		}
 		Map json = JSON.parse(resp.text)
 		if (json.Entrances.size() == 0) {
-			return [:]
+			return []
 		}
 		String stationCode = json.Entrances.first().StationCode1
 		Collection stations = getStations()
@@ -58,7 +58,7 @@ class MetroService {
 			station.Code == stationCode || station.StationTogether1 == stationCode || station.StationTogether2 == stationCode
 		}
 		if (currentStations.size() == 0) {
-			return [:]
+			return []
 		}
 		return currentStations
 	}
@@ -92,7 +92,6 @@ class MetroService {
 		RestResponse resp = new RestBuilder().get(WMAT_API_ROOT + 'jPath?FromStationCode=' + startCode + '&ToStationCode=' + endCode) {
 			header 'api_key', grailsApplication.config.wmat.api.key
 		}
-		println WMAT_API_ROOT + 'jPath?FromStationCode=' + startCode + '&ToStationCode=' + endCode
 		Map json = JSON.parse(resp.text)
 		return json.Path
 	}
