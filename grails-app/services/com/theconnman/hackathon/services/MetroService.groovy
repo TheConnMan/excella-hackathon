@@ -33,7 +33,7 @@ class MetroService {
 			if (startStationsWithLine.size() == 1) {
 				resp.departures = endsOnCommonLines.grep { Map train ->
 					Collection remainingStops = getRemainingStops(startStationsWithLine.first().Code, train.destinationCode)
-					return destinationStations*.Code.intersect(remainingStops*.StationCode)
+					return (destinationStations*.Code ?: []).intersect(remainingStops*.StationCode ?: [])
 				}
 			}
 		}
