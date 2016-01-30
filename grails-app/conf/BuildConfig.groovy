@@ -41,6 +41,7 @@ grails.project.dependency.resolution = {
 		compile ":spring-security-core:2.0-RC5"
 
 		test ":codenarc:0.22"
+		test ":code-coverage:2.0.3-3"
 	}
 }
 codenarc.reports = {
