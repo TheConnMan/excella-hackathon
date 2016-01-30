@@ -20,4 +20,11 @@ class ApiController {
 			return apiService.isAnagram(it)
 		}] as JSON)
 	}
+
+	def palindrome() {
+		Collection stringPairs = JSON.parse(request.reader.text)
+		render([data: stringPairs.collect {
+			return apiService.isPalindrome(it)
+		}] as JSON)
+	}
 }

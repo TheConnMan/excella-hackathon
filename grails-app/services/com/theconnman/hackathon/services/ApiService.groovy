@@ -8,4 +8,8 @@ class ApiService {
 	boolean isAnagram(Collection<String> stringPair) {
 		return stringPair.first().split('').sort().join('') == stringPair.last().split('').sort().join('')
 	}
+
+	boolean isPalindrome(String word) {
+		return word == word.reverse()
+	}
 }
