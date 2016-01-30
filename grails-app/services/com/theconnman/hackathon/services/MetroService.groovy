@@ -12,13 +12,16 @@ class MetroService {
 
 	def grailsApplication
 	static final WMAT_API_ROOT = 'https://api.wmata.com/Rail.svc/json/'
+	static final REAL_TIME_API_ROOT = 'https://excellathon.herokuapp.com/wmata/StationPrediction.svc/json/GetPrediction/'
 
 	Map constructResponse(double lat, double lng, double radius) {
 		Map station = getNearbyStation(lat, lng, radius)
+		Collection nextTrains = getNextTrains([station.Code])
 		return [
 			station: station?.Name,
 			stationLat: station?.Lat,
-			stationLong: station?.Lon
+			stationLong: station?.Lon,
+			departures: nextTrains
 		]
 	}
 
@@ -39,6 +42,20 @@ class MetroService {
 			return [:]
 		}
 		return currentStations.first()
+	}
+
+	Collection getNextTrains(Collection<String> stationCodes) {
+		RestResponse resp = new RestBuilder().get(REAL_TIME_API_ROOT + stationCodes.join(','))
+		Collection allTrains = JSON.parse(resp.text).Trains.grep { Map train ->
+			return train.DestinationCode != null
+		}
+		return allTrains.collect { Map train ->
+			return [
+				destination: train.DestinationName,
+				line: train.Line,
+				minutes: train.Min
+			]
+		}
 	}
 
 	Collection getStations() {
