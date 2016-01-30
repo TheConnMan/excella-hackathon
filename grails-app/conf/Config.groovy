@@ -46,6 +46,8 @@ environments {
 	}
 	production {
 		grails.logging.jul.usebridge = false
+		grails.assets.minifyCss = false
+		grails.assets.minifyJs = false
 	}
 }
 
