@@ -50,7 +50,7 @@ class ApiService {
 		return true
 	}
 
-	Collection primeFactors(int number) {
+	Collection primeFactors(double number) {
 		if (number == 0) {
 			return []
 		}
@@ -63,7 +63,7 @@ class ApiService {
 		return factors
 	}
 
-	int getNextFactor(int number) {
+	int getNextFactor(double number) {
 		if (number < 4) {
 			return number
 		}
