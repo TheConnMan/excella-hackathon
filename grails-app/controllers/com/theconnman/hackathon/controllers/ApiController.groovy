@@ -55,4 +55,11 @@ class ApiController {
 			return apiService.primeFactors(it)
 		}] as JSON)
 	}
+
+	def fromRoman() {
+		Collection input = JSON.parse(request.reader.text)
+		render([data: input.collect {
+			return apiService.fromRoman(it)
+		}] as JSON)
+	}
 }

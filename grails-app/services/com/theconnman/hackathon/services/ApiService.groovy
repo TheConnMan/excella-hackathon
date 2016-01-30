@@ -6,6 +6,36 @@ import grails.transaction.Transactional
 class ApiService {
 
 	Collection fibonacciCache = [0, 1]
+	Map fromNumeralMap = [
+		'I': [
+			value: 1,
+			subtractFrom: ['V', 'X']
+		],
+		'V': [
+			value: 5,
+			subtractFrom: []
+		],
+		'X': [
+			value: 10,
+			subtractFrom: ['L', 'C']
+		],
+		'L': [
+			value: 50,
+			subtractFrom: []
+		],
+		'C': [
+			value: 100,
+			subtractFrom: ['D', 'M']
+		],
+		'D': [
+			value: 500,
+			subtractFrom: []
+		],
+		'M': [
+			value: 1000,
+			subtractFrom: []
+		]
+	]
 
 	boolean isAnagram(Collection<String> stringPair) {
 		return stringPair.first().split('').sort().join('') == stringPair.last().split('').sort().join('')
@@ -72,5 +102,25 @@ class ApiService {
 				return i
 			}
 		}
+	}
+
+	int fromRoman(String numeral) {
+		int index = 0
+		int sum = 0
+		while (index < numeral.size()) {
+			Map result = parseNumeral(numeral[index], numeral.size() > index + 1 ? numeral[index + 1] : null)
+			sum += result.num
+			index += result.increment
+		}
+		return sum
+	}
+
+	Map parseNumeral(String currentNum, String nextNum) {
+		Map currentMap = fromNumeralMap[currentNum]
+		if (!nextNum || !(nextNum in currentMap.subtractFrom)) {
+			return [num: currentMap.value, increment: 1]
+		}
+		Map nextMap = fromNumeralMap[nextNum]
+		return [num: nextMap.value - currentMap.value, increment: 2]
 	}
 }
