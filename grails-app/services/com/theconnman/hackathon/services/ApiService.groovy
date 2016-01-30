@@ -36,6 +36,12 @@ class ApiService {
 			subtractFrom: []
 		]
 	]
+	Collection toNumeralKey = [
+		['I', 'V'],
+		['X', 'L'],
+		['C', 'D'],
+		['M']
+	]
 
 	boolean isAnagram(Collection<String> stringPair) {
 		return stringPair.first().split('').sort().join('') == stringPair.last().split('').sort().join('')
@@ -122,5 +128,31 @@ class ApiService {
 		}
 		Map nextMap = fromNumeralMap[nextNum]
 		return [num: nextMap.value - currentMap.value, increment: 2]
+	}
+
+	String toRoman(int number) {
+		String numeral = ''
+		if (number >= 1000) {
+			numeral += (1..(number / 1000)).collect { 'M' }.join('')
+		}
+		String string = (number % 1000).toString()
+		for (int index = 0; index < string.size(); index++) {
+			int power = string.size() - index - 1
+			int num = string[index].toInteger()
+			if (num != 0) {
+				if (num < 4) {
+					numeral += (1..num).collect { toNumeralKey[power][0] }.join('')
+				} else if (num == 4) {
+					numeral += toNumeralKey[power][0] + toNumeralKey[power][1]
+				} else if (num == 5) {
+					numeral += toNumeralKey[power][1]
+				} else if (num < 9) {
+					numeral += toNumeralKey[power][1] + (6..num).collect { toNumeralKey[power][0] }.join('')
+				} else {
+					numeral += toNumeralKey[power][0] + toNumeralKey[power + 1][0]
+				}
+			}
+		}
+		return numeral
 	}
 }

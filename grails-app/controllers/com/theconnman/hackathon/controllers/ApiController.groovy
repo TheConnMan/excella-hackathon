@@ -62,4 +62,11 @@ class ApiController {
 			return apiService.fromRoman(it)
 		}] as JSON)
 	}
+
+	def toRoman() {
+		Collection input = JSON.parse(request.reader.text)
+		render([data: input.collect {
+			return apiService.toRoman(it)
+		}] as JSON)
+	}
 }
