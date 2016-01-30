@@ -26,7 +26,13 @@ class MetroService {
 		if (destination) {
 			Map location = getLatLng(destination)
 			Collection<Map> destinationStations = getNearbyStation(location.lat, location.lng, 600)
-			Collection commonLines = getCommonLines(stations, destinationStations)
+			Collection commonLines = getCommonLines(stations, destinationStations).unique()
+			Collection newStationLocations = stations.grep { hasLines(it, commonLines) }
+			if (newStationLocations.size() != 0) {
+				resp.station = newStationLocations.first().Name
+				resp.stationLat = newStationLocations.first().Lat
+				resp.stationLong = newStationLocations.first().Lon
+			}
 			Collection endsOnCommonLines = nextTrains.grep {
 				it.line in commonLines
 			}
@@ -53,10 +59,10 @@ class MetroService {
 		if (json.Entrances && json.Entrances.size() == 0) {
 			return []
 		}
-		String stationCode = json.Entrances ? json.Entrances.first().StationCode1 : []
+		Collection stationCodes = json.Entrances*.StationCode1
 		Collection stations = getStations()
 		Collection currentStations = stations.grep { Map station ->
-			station.Code == stationCode || station.StationTogether1 == stationCode || station.StationTogether2 == stationCode
+			station.Code in stationCodes || station.StationTogether1 in stationCodes || station.StationTogether2 in stationCodes
 		}
 		if (currentStations.size() == 0) {
 			return []
