@@ -49,4 +49,28 @@ class ApiService {
 		}
 		return true
 	}
+
+	Collection primeFactors(int number) {
+		if (number == 0) {
+			return []
+		}
+		Collection factors = []
+		while (number != 1) {
+			int nextFactor = getNextFactor(number)
+			factors.push(nextFactor)
+			number = number / nextFactor
+		}
+		return factors
+	}
+
+	int getNextFactor(int number) {
+		if (number < 4) {
+			return number
+		}
+		for (int i = 2; i <= number; i++) {
+			if (number % i == 0) {
+				return i
+			}
+		}
+	}
 }

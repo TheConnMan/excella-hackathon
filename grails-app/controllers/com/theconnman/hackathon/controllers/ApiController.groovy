@@ -48,4 +48,11 @@ class ApiController {
 			return apiService.isPrime(it)
 		}] as JSON)
 	}
+
+	def primeFactors() {
+		Collection input = JSON.parse(request.reader.text)
+		render([data: input.collect {
+			return apiService.primeFactors(it)
+		}] as JSON)
+	}
 }
