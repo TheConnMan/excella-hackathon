@@ -1,7 +1,5 @@
 package com.theconnman.hackathon.services
 
-import java.util.Map;
-
 import grails.converters.JSON
 import grails.plugins.rest.client.RestBuilder
 import grails.plugins.rest.client.RestResponse
@@ -13,16 +11,22 @@ class MetroService {
 	def grailsApplication
 	static final WMAT_API_ROOT = 'https://api.wmata.com/Rail.svc/json/'
 	static final REAL_TIME_API_ROOT = 'https://excellathon.herokuapp.com/wmata/StationPrediction.svc/json/GetPrediction/'
+	static final MAPS_API_ROOT = 'http://maps.googleapis.com/maps/api/geocode/json?address='
 
-	Map constructResponse(double lat, double lng, double radius) {
+	Map constructResponse(double lat, double lng, double radius, String destination) {
 		Collection<Map> stations = getNearbyStation(lat, lng, radius)
 		Collection nextTrains = getNextTrains(stations*.Code)
-		return [
+		Map resp = [
 			station: stations?.first().Name,
 			stationLat: stations?.first().Lat,
 			stationLong: stations?.first().Lon,
 			departures: nextTrains
 		]
+		if (destination) {
+			Map location = getLatLng(destination)
+			Collection<Map> destinationStations = getNearbyStation(location.lat, location.lng, 600)
+		}
+		return resp
 	}
 
 	Collection<Map> getNearbyStation(double lat, double lng, double radius) {
@@ -56,6 +60,16 @@ class MetroService {
 				minutes: train.Min
 			]
 		}
+	}
+
+	Map getLatLng(String address) {
+		RestResponse resp = new RestBuilder().get(MAPS_API_ROOT + address)
+		Map json = JSON.parse(resp.text)
+		Collection results = json.results
+		if (results.size() == 0) {
+			return [:]
+		}
+		return results.first().geometry.location
 	}
 
 	Collection getStations() {
