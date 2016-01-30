@@ -196,11 +196,11 @@ class ApiService {
 			} else if (!firstThrow && bowls[index - 1] + bowls[index] == 10) { // Spare
 				last = 'spare'
 				firstThrow = true
-				frame ++
+				frame++
 			} else { // Other
 				last = ''
-				firstThrow = !firstThrow
 				frame += !firstThrow ? 1 : 0
+				firstThrow = !firstThrow
 			}
 		}
 		return score
